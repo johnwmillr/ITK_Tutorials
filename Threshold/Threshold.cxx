@@ -35,12 +35,16 @@ int main( int argc, char *argv[] )
 	// Create the thresholding filter
 	// Declare the filter
 	typedef itk::BinaryThresholdImageFilter< ImageType, ImageType> FilterType;
+	FilterType::Pointer filter = FilterType::New();
 
 	// We need to convert the command line arguments to numbers first
 	const PixelType lowerThreshold = static_cast<PixelType>(atoi( argv[3]));
 	const PixelType upperThreshold = static_cast<PixelType>(atoi( argv[4]));
-	const PixelType minVal = 0;
-	const PixelType maxVal = 1;
+	const PixelType minVal = static_cast<PixelType>(0.0);
+	const PixelType maxVal = static_cast<PixelType>(255.0);
+
+	// Tell filter to work on the input image
+	filter->SetInput(reader->GetOutput());
 
 	// Send the lower/upper threshold values into the filter
 	filter->SetLowerThreshold(lowerThreshold);
@@ -51,11 +55,6 @@ int main( int argc, char *argv[] )
 	filter->SetOutsideValue(minVal);
 	filter->SetInsideValue( maxVal);
 
-	// Update the filter
-	filter->Update();
-	
-	// Apply the filter
-	filter->SetInput(reader->GetOutput()));
 	
 	// -----------------------------------------------------------------
 	// Write the file
